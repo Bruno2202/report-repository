@@ -15,9 +15,11 @@ import EditReport from '../components/modals/EditReport'
 
 export const Home: React.FC = () => {
 	const [reports, setReports] = useState<ReportModel[]>([]);
+	const [filteredReports, setFilteredReports]= useState<ReportModel[]>([])
 	const [loading, setLoading] = useState<boolean>(false);
 
 	const { tags } = useContext(SearchContext)!;
+	const { searchParam, setSearchParam } = useContext(SearchContext)!;
 
 	useEffect(() => {
 		const getReports = async () => {
@@ -25,12 +27,29 @@ export const Home: React.FC = () => {
 
 			const data: ReportModel[] = await ReportService.getReports();
 			setReports(data);
+			setFilteredReports(data);
+
+			console.log(data)
 
 			setLoading(false);
 		}
 
 		getReports();
 	}, []);
+
+	useEffect(() => {
+		const serachReports = () => {
+			const reportsData: ReportModel[] = reports.filter(report =>
+				report.folder.toLowerCase().includes(searchParam) ||
+				(report.xml && report.xml.toLowerCase().includes(searchParam)) ||
+				(report.description && report.description.toLowerCase().includes(searchParam))
+			);
+
+			setFilteredReports(reportsData);
+		}
+
+		serachReports();
+	}, [searchParam]);
 
 	async function handleRefreshReports() {
 		setLoading(true);
@@ -68,7 +87,7 @@ export const Home: React.FC = () => {
 				</aside>
 
 				<main className='flex flex-col flex-1 px-8 py-6 bg-body-dark gap-4'>
-					<SearchInput />
+					<SearchInput onChange={(e) => setSearchParam(e.target.value)} />
 					<div className='flex flex-row flex-wrap items-center w-fit gap-2'>
 						{tags.length > 0 &&
 							tags.map((tag) => (
@@ -82,13 +101,14 @@ export const Home: React.FC = () => {
 						{loading ? (
 							<p className='text-gray font-medium italic'>Carregando relatórios...</p>
 						) : (
-							reports.length > 0 &&
-							reports.map((report: ReportModel, index) => (
-								<ReportCard
-									key={index}
-									report={report}
-								/>
-							))
+							filteredReports && filteredReports.length > 0 && (
+								filteredReports.map((report: ReportModel, index) => (
+									<ReportCard
+										key={index}
+										report={report}
+									/>
+								))
+							)
 						)}
 					</div>
 				</main>

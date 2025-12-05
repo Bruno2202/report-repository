@@ -8,22 +8,22 @@ const TagsPreview: React.FC = () => {
     const [result, setResult] = useState<Tag[]>(productTags);
 
     const { isOpenModal, closeModal } = useContext(ModalContext)!;
-    const { tags, setTags, searchParam, setSearchParam } = useContext(SearchContext)!;
+    const { tags, setTags, searchTagsParam, setSearchTagsParam } = useContext(SearchContext)!;
 
     useEffect(() => {
         const handleSearchChange = (): void => {
-            const searchResult = productTags.filter(tag => tag.name.toUpperCase().includes(searchParam.toUpperCase()));
+            const searchResult = productTags.filter(tag => tag.name.toUpperCase().includes(searchTagsParam.toUpperCase()));
             setResult(searchResult.map(tag => tag));
         }
 
         handleSearchChange();
-    }, [searchParam])
+    }, [searchTagsParam])
 
     return (
         isOpenModal("TagsPreview") &&
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-25 backdrop-blur-xs">
             <div className="flex flex-col z-50 gap-4 w-1/3 max-w-4xl">
-                <SearchTagInput onChange={(e) => setSearchParam(e.target.value)} />
+                <SearchTagInput onChange={(e) => setSearchTagsParam(e.target.value)} />
 
                 <div className="flex flex-col text-white font-medium gap-2 bg-aside-dark border border-border-dark rounded-md p-4 max-h-96 overflow-y-auto">
                     {result.length > 0 ? (
@@ -44,7 +44,7 @@ const TagsPreview: React.FC = () => {
                                 {tag.name}
                             </div>
                         )
-                    ) : searchParam && (
+                    ) : searchTagsParam && (
                         <p>Nenhuma tag encontrada.</p>
                     )}
                 </div>
@@ -52,7 +52,7 @@ const TagsPreview: React.FC = () => {
             <div
                 className="fixed inset-0 cursor-pointer"
                 onClick={() => {
-                    setSearchParam("");
+                    setSearchTagsParam("");
                     closeModal("TagsPreview")
                 }}
             />

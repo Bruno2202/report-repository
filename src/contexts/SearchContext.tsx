@@ -10,6 +10,8 @@ interface SearchContextType {
     setTags: React.Dispatch<React.SetStateAction<Tag[]>>;
     searchParam: string;
     setSearchParam: React.Dispatch<React.SetStateAction<string>>;
+    searchTagsParam: string;
+    setSearchTagsParam: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export const SearchContext = createContext<SearchContextType | null>(null);
@@ -17,6 +19,7 @@ export const SearchContext = createContext<SearchContextType | null>(null);
 export default function SearchProvider({ children }: Props) {
     const [tags, setTags] = useState<Tag[]>([]);
     const [searchParam, setSearchParam] = useState<string>("");
+    const [searchTagsParam, setSearchTagsParam] = useState<string>("");
 
     return (
         <SearchContext.Provider
@@ -24,7 +27,9 @@ export default function SearchProvider({ children }: Props) {
                 tags,
                 setTags,
                 searchParam,
-                setSearchParam
+                setSearchParam,
+                searchTagsParam,
+                setSearchTagsParam
             }}
         >
             {children}

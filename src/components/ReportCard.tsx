@@ -16,9 +16,9 @@ const ReportCard: React.FC<ReportCardProps> = ({ report }) => {
         <div className="bg-card-dark border border-border-dark rounded-md p-4 text-white cursor-pointer hover:-translate-y-1 hover:shadow-2xl transition-all">
             <div className="flex flex-row">
                 <div className="flex flex-col w-2/3">
-                    <h1 className="font-medium mb-2">📁 {report.folder}</h1>
-                    <p className="text-xs text-gray truncate overflow-hidden max-w-2/3">
-                        XML: {report.xml}
+                    <h1 className="font-bold mb-2">📁 {report.folder}</h1>
+                    <p className="text-xs text-gray font-medium truncate overflow-hidden max-w-2/3">
+                        XML: {report.xml || "Sem XML informado"}
                     </p>
                 </div>
                 <div className="flex flex-1 items-start justify-end w-1/3">
