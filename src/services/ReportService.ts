@@ -16,10 +16,6 @@ export class ReportService {
 
     static async updateReport(folder: string, description: string): Promise<ReportModel> {
         try {
-            console.log(
-                folder,
-                description)
-
             const res: AxiosResponse<ReportModel> = await api.put("/save", {
                 folder,
                 description
@@ -30,5 +26,23 @@ export class ReportService {
             console.error(error);
             return {} as ReportModel;
         }
+    }
+
+    static async downloadFile(folder: string, filename: string) {
+        const url = `${import.meta.env.VITE_API_DOMAIN}/download/${folder}/${filename}`;
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            console.error("Erro ao baixar arquivo");
+            return;
+        }
+
+        const blob = await response.blob();
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = filename;
+        link.click();
+
+        URL.revokeObjectURL(link.href);
     }
 }

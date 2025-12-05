@@ -8,7 +8,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ onChange }) => {
             type="search"
             placeholder="🔍 Busque por nome, xml ou conteúdo da descrição..."
             onChange={onChange}
-            className="py-2 px-4 border border-border-dark rounded-md w-full outline-none focus:border-blue transition-colors bg-card-dark placeholder:text-dark-gray text-white"
+            className="py-2 px-4 border border-border-dark rounded-xl w-full outline-none focus:border-blue transition-colors bg-card-dark placeholder:text-dark-gray text-white"
         />
     );
 }

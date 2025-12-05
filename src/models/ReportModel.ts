@@ -5,4 +5,5 @@ export interface ReportModel {
     sql: string;
     sqlFile: string;
     description: string;
+    folderPath: string;
 }

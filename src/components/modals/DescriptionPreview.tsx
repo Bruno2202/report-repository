@@ -18,10 +18,10 @@ const DescriptionPreview: React.FC = () => {
         onClick={() => closeModal("DescriptionPreview")}
       />
 
-      <div className="relative bg-card-dark border border-border-dark rounded-md p-6 w-3/4 max-w-4xl text-white z-50 h-4/5 overflow-y-auto">
+      <div className="relative bg-card-dark border border-border-dark rounded-xl p-6 w-3/4 max-w-4xl text-white z-50 h-4/5 overflow-y-auto">
         <div className="flex flex-row justify-end items-center mb-4">
           <button
-            className="p-1 hover:bg-error/12 rounded-md hover:text-error cursor-pointer transition-colors"
+            className="p-1 hover:bg-error/12 rounded-xl hover:text-error cursor-pointer transition-colors"
             onClick={() => closeModal("DescriptionPreview")}
           >
             <X size={28} />

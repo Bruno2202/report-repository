@@ -33,8 +33,8 @@ ReactDOM.createRoot(root!).render(
 								color: "white",
 								fontFamily: "'Inter'",
 								fontWeight: "500",
-								padding: "12px 16px",
-								borderRadius: "8px",
+								padding: "8px 12px",
+								borderRadius: "16px",
 								boxShadow: "0 4px 12px rgba(0,0,0,0.35)",
 							},
 							success: {

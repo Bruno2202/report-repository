@@ -25,7 +25,7 @@ const TagsPreview: React.FC = () => {
             <div className="flex flex-col z-50 gap-4 w-1/3 max-w-4xl">
                 <SearchTagInput onChange={(e) => setSearchTagsParam(e.target.value)} />
 
-                <div className="flex flex-col text-white font-medium gap-2 bg-aside-dark border border-border-dark rounded-md p-4 max-h-96 overflow-y-auto">
+                <div className="flex flex-col text-white font-medium gap-2 bg-aside-dark border border-border-dark rounded-xl p-4 max-h-96 overflow-y-auto">
                     {result.length > 0 ? (
                         result.map((tag) =>
                             <div className="flex flex-row gap-2 items-center">

@@ -28,6 +28,7 @@ export const Home: React.FC = () => {
 			const data: ReportModel[] = await ReportService.getReports();
 			setReports(data);
 			setFilteredReports(data);
+			console.log(reports)
 
 			console.log(data)
 
@@ -68,11 +69,11 @@ export const Home: React.FC = () => {
 					<p className='text-sm font-medium text-gray'>Nenhuma pasta selecionada.</p>
 
 					<div className='flex flex-col text-white gap-2 my-8'>
-						<button className='text-sm font-medium bg-blue hover:bg-blue-hover transition-colors rounded-md p-2 cursor-pointer'>
+						<button className='text-sm font-medium bg-blue hover:bg-blue-hover transition-colors rounded-xl p-2 cursor-pointer'>
 							Selecionar Pasta
 						</button>
 						<button
-							className='text-sm font-medium border text-gray hover:text-white border-border-dark hover:border-border-hover transition-colors rounded-md p-2 cursor-pointer'
+							className='text-sm font-medium border text-gray hover:text-white border-border-dark hover:border-border-hover transition-colors rounded-xl p-2 cursor-pointer'
 							onClick={() => {
 								handleRefreshReports()
 							}}
