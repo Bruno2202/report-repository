@@ -6,6 +6,9 @@ import { ReportContext } from "../../contexts/ReportContext";
 import { ModalContext } from "../../contexts/ModalContext";
 import { ReportService } from "../../services/ReportService";
 import toast from "react-hot-toast";
+import AddTag from "../AddTag";
+import FieldTag from "../Field";
+import { SearchContext } from "../../contexts/SearchContext";
 
 const EditReport: React.FC = () => {
     const [title, setTitle] = useState<string>("");
@@ -17,6 +20,7 @@ const EditReport: React.FC = () => {
 
     const { report } = useContext(ReportContext)!;
     const { isOpenModal, closeModal } = useContext(ModalContext)!;
+    const { tags } = useContext(SearchContext)!;
 
     useEffect(() => {
         if (report) {
@@ -73,7 +77,7 @@ const EditReport: React.FC = () => {
                 <div className="flex flex-col gap-2">
                     <button
                         onClick={() => setOpenDescription(!openDescription)}
-                        className="w-full flex justify-between items-center bg-aside-dark px-4 py-2 rounded-lg border border-border-dark hover:border-blue transition-colors"
+                        className="cursor-pointer  w-full flex justify-between items-center bg-aside-dark px-4 py-2 rounded-lg border border-border-dark hover:border-blue transition-colors"
                     >
                         <span className="font-medium">Descrição (Markdown)</span>
                         {openDescription ? <ChevronUp /> : <ChevronDown />}
@@ -84,7 +88,6 @@ const EditReport: React.FC = () => {
                             }`}
                     >
                         <div className="grid grid-cols-2 gap-4 overflow-hidden">
-
                             <textarea
                                 className="bg-body-dark border border-border-dark rounded-xl p-3 w-full h-96 resize-none outline-none focus:border-blue"
                                 value={description}
@@ -97,25 +100,30 @@ const EditReport: React.FC = () => {
                                     {description || "_Pré-visualização do Markdown..._"}
                                 </Markdown>
                             </div>
-
                         </div>
                     </div>
 
                     <button
                         onClick={() => setOpenTags(!openTags)}
-                        className="w-full flex justify-between items-center bg-aside-dark px-4 py-2 rounded-lg border border-border-dark hover:border-blue transition-colors"
+                        className="cursor-pointer w-full flex justify-between items-center bg-aside-dark px-4 py-2 rounded-lg border border-border-dark hover:border-blue transition-colors"
                     >
                         <span className="font-medium">Tags</span>
                         {openTags ? <ChevronUp /> : <ChevronDown />}
                     </button>
 
-                    <div
-                        className={`grid transition-all duration-300 overflow-hidden ${openTags ? "grid-rows-1 mt-3" : "grid-rows-[0fr]"
-                            }`}
-                    >
-                    </div>
+                    {openTags && (
+                        <div className="flex transition-all duration-300 mt-3">
+                            <div className="flex flex-row flex-wrap items-center w-fit gap-2">
+                                {tags.length > 0 &&
+                                    tags.map((tag) => (
+                                        <FieldTag key={tag.id} tag={tag} />
+                                    ))
+                                }
+                                <AddTag />
+                            </div>
+                        </div>
+                    )}
                 </div>
-
 
                 <div className="flex justify-end mt-6">
                     <button

@@ -4,26 +4,31 @@ import { SearchContext } from "../../contexts/SearchContext";
 import { productTags, type Tag } from "../../data/tags";
 import SearchTagInput from "../inputs/SearchTagInput";
 
-const TagsPreview: React.FC = () => {
+interface TagsPreviewProps {
+    mode: "filter" | "edit";
+    tags: Tag[];
+}
+
+const TagsPreview: React.FC<TagsPreviewProps> = ({ mode, tags }) => {
     const [result, setResult] = useState<Tag[]>(productTags);
+    const [searchParam, setSearchParam] = useState<string>("");
 
     const { isOpenModal, closeModal } = useContext(ModalContext)!;
-    const { tags, setTags, searchTagsParam, setSearchTagsParam } = useContext(SearchContext)!;
 
     useEffect(() => {
         const handleSearchChange = (): void => {
-            const searchResult = productTags.filter(tag => tag.name.toUpperCase().includes(searchTagsParam.toUpperCase()));
+            const searchResult = productTags.filter(tag => tag.name.toUpperCase().includes(searchParam.toUpperCase()));
             setResult(searchResult.map(tag => tag));
         }
 
         handleSearchChange();
-    }, [searchTagsParam])
+    }, [searchParam]);
 
     return (
         isOpenModal("TagsPreview") &&
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-25 backdrop-blur-xs">
-            <div className="flex flex-col z-50 gap-4 w-1/3 max-w-4xl">
-                <SearchTagInput onChange={(e) => setSearchTagsParam(e.target.value)} />
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-30 backdrop-blur-xs">
+            <div className="flex flex-col z-40 gap-4 w-1/3 max-w-4xl">
+                <SearchTagInput onChange={(e) => setSearchParam(e.target.value)} />
 
                 <div className="flex flex-col text-white font-medium gap-2 bg-aside-dark border border-border-dark rounded-xl p-4 max-h-96 overflow-y-auto">
                     {result.length > 0 ? (
