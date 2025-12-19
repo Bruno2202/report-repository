@@ -14,11 +14,25 @@ export class ReportService {
         }
     }
 
-    static async updateReport(folder: string, description: string): Promise<ReportModel> {
+    static async updateReport(folder: string, report: ReportModel): Promise<ReportModel> {
         try {
+            const { 
+                description,
+                folderPath,
+                type,
+                tags,
+                title
+             } = report;
+
             const res: AxiosResponse<ReportModel> = await api.put("/save", {
                 folder,
-                description
+                report: {
+                    description,
+                    folderPath,
+                    type,
+                    tags,
+                    title
+                }
             });
 
             return res.data;
