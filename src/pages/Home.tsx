@@ -3,7 +3,6 @@ import ReportCard from '../components/ReportCard'
 import Footer from '../components/Footer'
 import SqlPreview from '../components/modals/SqlPreview'
 import AddTag from '../components/AddTag'
-import TagsPreview from '../components/modals/TagsPreview'
 import type React from 'react'
 import { useContext, useEffect, useState } from 'react'
 import { SearchContext } from '../contexts/SearchContext'
@@ -12,14 +11,18 @@ import { ReportService } from '../services/ReportService'
 import type { ReportModel } from '../models/ReportModel'
 import DescriptionPreview from '../components/modals/DescriptionPreview'
 import EditReport from '../components/modals/EditReport'
+import { ReportContext } from '../contexts/ReportContext'
+import SearchTagsPreview from '../components/modals/SearchTagsPreview'
+import type { TagModel } from '../models/TagModel'
+import toast from 'react-hot-toast'
 
 export const Home: React.FC = () => {
-	const [reports, setReports] = useState<ReportModel[]>([]);
-	const [filteredReports, setFilteredReports]= useState<ReportModel[]>([])
+	const [filteredReports, setFilteredReports] = useState<ReportModel[]>([])
 	const [loading, setLoading] = useState<boolean>(false);
+	const [selectedTags, setSelectedTags] = useState<TagModel[]>([]);
 
-	const { tags } = useContext(SearchContext)!;
 	const { searchParam, setSearchParam } = useContext(SearchContext)!;
+	const { reports, setReports } = useContext(ReportContext)!;
 
 	useEffect(() => {
 		const getReports = async () => {
@@ -28,9 +31,6 @@ export const Home: React.FC = () => {
 			const data: ReportModel[] = await ReportService.getReports();
 			setReports(data);
 			setFilteredReports(data);
-			console.log(reports)
-
-			console.log(data)
 
 			setLoading(false);
 		}
@@ -39,18 +39,38 @@ export const Home: React.FC = () => {
 	}, []);
 
 	useEffect(() => {
-		const serachReports = () => {
-			const reportsData: ReportModel[] = reports.filter(report =>
-				report.folder.toLowerCase().includes(searchParam) ||
-				(report.xml && report.xml.toLowerCase().includes(searchParam)) ||
-				(report.description && report.description.toLowerCase().includes(searchParam))
-			);
+		setFilteredReports(reports);
+	}, [reports]);
 
-			setFilteredReports(reportsData);
-		}
 
-		serachReports();
-	}, [searchParam]);
+	useEffect(() => {
+		const searchReports = () => {
+			if (reports.length > 0) {
+				const reportsData = reports.filter(report => {
+					const search = searchParam.toLowerCase();
+					const matchesText =
+						report.folder.toLowerCase().includes(search) ||
+						(report.xml && report.xml.toLowerCase().includes(search)) ||
+						(report.description && report.description.toLowerCase().includes(search));
+
+					const matchesTags = selectedTags.length === 0 ||
+						selectedTags.every(sTag =>
+							report.tags?.some(rTag => {
+								const tagName = typeof rTag === 'object' ? rTag.name : rTag;
+
+								return tagName?.toLowerCase() === sTag.name?.toLowerCase();
+							})
+						);
+
+					return matchesText && matchesTags;
+				});
+
+				setFilteredReports(reportsData);
+			}
+		};
+
+		searchReports();
+	}, [searchParam, selectedTags, reports]);
 
 	async function handleRefreshReports() {
 		setLoading(true);
@@ -69,7 +89,14 @@ export const Home: React.FC = () => {
 					<p className='text-sm font-medium text-gray'>Nenhuma pasta selecionada.</p>
 
 					<div className='flex flex-col text-white gap-2 my-8'>
-						<button className='text-sm font-medium bg-blue hover:bg-blue-hover transition-colors rounded-xl p-2 cursor-pointer'>
+						<button 
+							className='text-sm font-medium bg-blue hover:bg-blue-hover transition-colors rounded-xl p-2 cursor-pointer
+								opacity-50
+							'
+							onClick={() => {
+								toast("Funcionalidade indisponível")
+							}}	
+						>
 							Selecionar Pasta
 						</button>
 						<button
@@ -90,34 +117,46 @@ export const Home: React.FC = () => {
 				<main className='flex flex-col flex-1 px-8 py-6 bg-body-dark gap-4'>
 					<SearchInput onChange={(e) => setSearchParam(e.target.value)} />
 					<div className='flex flex-row flex-wrap items-center w-fit gap-2'>
-						{tags.length > 0 &&
-							tags.map((tag) => (
-								<FieldTag tag={tag} />
+						{selectedTags.length > 0 &&
+							selectedTags.map((tag) => (
+								<FieldTag
+									key={tag.id}
+									tag={tag}
+									selectedTags={selectedTags}
+									setSelectedTags={setSelectedTags}
+								/>
 							))
 						}
-						<AddTag />
+						<AddTag modal="SearchTagsPreview"/>
 					</div>
-
-					<div className='grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4 overflow-y-auto pr-2'>
-						{loading ? (
-							<p className='text-gray font-medium italic'>Carregando relatórios...</p>
-						) : (
-							filteredReports && filteredReports.length > 0 && (
-								filteredReports.map((report: ReportModel, index) => (
-									<ReportCard
-										key={index}
-										report={report}
-									/>
-								))
-							)
-						)}
-					</div>
+					{loading ? (
+						<div className='flex w-full h-full items-center justify-center'>
+							<img
+								src="/assets/img/loading.gif"
+								alt="Carregando..."
+								className="w-12 h-12 object-contain opacity-85"
+							/>
+						</div>
+					) : (
+						<div className='grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4 overflow-y-auto pr-2 pt-2'>
+							{
+								filteredReports && filteredReports.length > 0 && (
+									filteredReports.map((report: ReportModel, index) => (
+										<ReportCard
+											key={index}
+											report={report}
+										/>
+									))
+								)
+							}
+						</div>
+					)}
 				</main>
 			</div>
 
 			<SqlPreview />
 			<DescriptionPreview />
-			<TagsPreview />
+			<SearchTagsPreview selectedTags={selectedTags} setSelectedTags={setSelectedTags} />
 			<EditReport />
 		</>
 	)

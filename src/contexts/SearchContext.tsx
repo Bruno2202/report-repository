@@ -1,13 +1,13 @@
 import React, { createContext, useState } from "react";
-import type { Tag } from "../data/tags";
+import type { TagModel } from "../models/TagModel";
 
 interface Props {
     children: React.ReactNode;
 }
 
 interface SearchContextType {
-    tags: Tag[];
-    setTags: React.Dispatch<React.SetStateAction<Tag[]>>;
+    tags: TagModel[];
+    setTags: React.Dispatch<React.SetStateAction<TagModel[]>>;
     searchParam: string;
     setSearchParam: React.Dispatch<React.SetStateAction<string>>;
     searchTagsParam: string;
@@ -17,7 +17,7 @@ interface SearchContextType {
 export const SearchContext = createContext<SearchContextType | null>(null);
 
 export default function SearchProvider({ children }: Props) {
-    const [tags, setTags] = useState<Tag[]>([]);
+    const [tags, setTags] = useState<TagModel[]>([]);
     const [searchParam, setSearchParam] = useState<string>("");
     const [searchTagsParam, setSearchTagsParam] = useState<string>("");
 

@@ -14,9 +14,13 @@ const ReportCard: React.FC<ReportCardProps> = ({ report }) => {
     const { openModal } = useContext(ModalContext)!;
 
     function handleCopyFolderPath() {
-        navigator.clipboard.writeText(report.folderPath).then(() => {
-            toast("🔗 Caminho copiado");
-        });
+        if (typeof navigator !== "undefined" && navigator.clipboard) {
+            navigator.clipboard.writeText(report.folderPath)
+                .then(() => toast("🔗 Caminho copiado"))
+                .catch(() => toast("❌ Erro ao copiar"));
+        } else {
+            toast("❌ Clipboard API não disponível");
+        }
     }
 
     return (
