@@ -16,13 +16,13 @@ export class ReportService {
 
     static async updateReport(folder: string, report: ReportModel): Promise<ReportModel> {
         try {
-            const { 
+            const {
                 description,
                 folderPath,
                 type,
                 tags,
                 title
-             } = report;
+            } = report;
 
             const res: AxiosResponse<ReportModel> = await api.put("/save", {
                 folder,
@@ -58,5 +58,34 @@ export class ReportService {
         link.click();
 
         URL.revokeObjectURL(link.href);
+    }
+    
+    static async createReport(
+        xml: File | null, 
+        sql: File | null, 
+        title: string, 
+        type: string, 
+        description: string
+    ) {
+        const formData = new FormData();
+        
+        if (xml) formData.append("xml", xml);
+        if (sql) formData.append("sql", sql);
+        
+        const metadata = {
+            title: title || "Sem Título",
+            type: type,
+            description: description
+        };
+        
+        formData.append("metadata", JSON.stringify(metadata));
+
+        const res: AxiosResponse<ReportResponseDto> = await api.post("/create", formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        });
+
+        return res.data;
     }
 }
