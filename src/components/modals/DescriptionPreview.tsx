@@ -3,7 +3,7 @@ import { useContext } from "react";
 import { ReportContext } from "../../contexts/ReportContext";
 import { ModalContext } from "../../contexts/ModalContext";
 import Markdown from "react-markdown";
-import  remarkGfm  from  'remark-gfm'
+import remarkGfm from 'remark-gfm'
 
 const DescriptionPreview: React.FC = () => {
   const { report } = useContext(ReportContext)!;
@@ -29,9 +29,9 @@ const DescriptionPreview: React.FC = () => {
         </div>
 
         <div className="prose prose-invert max-w-none">
-            <Markdown remarkPlugins={[remarkGfm]}>
-                {report.description || "Nenhuma descrição encontrada."}
-            </Markdown>
+          <Markdown remarkPlugins={[remarkGfm]}>
+            {report.description || "Nenhuma descrição encontrada."}
+          </Markdown>
         </div>
       </div>
     </div>
