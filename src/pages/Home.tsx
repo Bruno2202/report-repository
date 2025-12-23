@@ -1,7 +1,5 @@
 import SearchInput from '../components/inputs/SearchInput'
 import ReportCard from '../components/ReportCard'
-import Footer from '../components/Footer'
-import SqlPreview from '../components/modals/SqlPreview'
 import AddTag from '../components/AddTag'
 import type React from 'react'
 import { useContext, useEffect, useState } from 'react'
@@ -9,12 +7,10 @@ import { SearchContext } from '../contexts/SearchContext'
 import FieldTag from '../components/Field'
 import { ReportService } from '../services/ReportService'
 import type { ReportModel } from '../models/ReportModel'
-import DescriptionPreview from '../components/modals/DescriptionPreview'
-import EditReport from '../components/modals/EditReport'
-import { ReportContext } from '../contexts/ReportContext'
-import SearchTagsPreview from '../components/modals/SearchTagsPreview'
 import type { TagModel } from '../models/TagModel'
-import toast from 'react-hot-toast'
+import Sidebar from '../components/Sidebar'
+import Modals from '../components/modals/Modals'
+import { ReportContext } from '../contexts/ReportContext'
 
 export const Home: React.FC = () => {
 	const [filteredReports, setFilteredReports] = useState<ReportModel[]>([])
@@ -84,36 +80,9 @@ export const Home: React.FC = () => {
 	return (
 		<>
 			<div className='flex h-screen'>
-				<aside className='flex flex-col p-4 border-rd ark:border-gray-700 w-72 h-full bg-aside-dark border border-border-dark'>
-					<h1 className='text-lg font-bold text-white mb-2'>📂 Relatórios</h1>
-					<p className='text-sm font-medium text-gray'>Nenhuma pasta selecionada.</p>
-
-					<div className='flex flex-col text-white gap-2 my-8'>
-						<button 
-							className='text-sm font-medium bg-blue hover:bg-blue-hover transition-colors rounded-xl p-2 cursor-pointer
-								opacity-50
-							'
-							onClick={() => {
-								toast("Funcionalidade indisponível")
-							}}	
-						>
-							Selecionar Pasta
-						</button>
-						<button
-							className='text-sm font-medium border text-gray hover:text-white border-border-dark hover:border-border-hover transition-colors rounded-xl p-2 cursor-pointer'
-							onClick={() => {
-								handleRefreshReports()
-							}}
-						>
-							🔄 Atualizar
-						</button>
-					</div>
-
-					<div className='flex flex-1 justify-center items-end'>
-						<Footer />
-					</div>
-				</aside>
-
+				<Sidebar
+					refreshReports={handleRefreshReports}
+				/>
 				<main className='flex flex-col flex-1 px-8 py-6 bg-body-dark gap-4'>
 					<SearchInput onChange={(e) => setSearchParam(e.target.value)} />
 					<div className='flex flex-row flex-wrap items-center w-fit gap-2'>
@@ -127,7 +96,7 @@ export const Home: React.FC = () => {
 								/>
 							))
 						}
-						<AddTag modal="SearchTagsPreview"/>
+						<AddTag modal="SearchTagsPreview" />
 					</div>
 					{loading ? (
 						<div className='flex w-full h-full items-center justify-center'>
@@ -154,10 +123,13 @@ export const Home: React.FC = () => {
 				</main>
 			</div>
 
-			<SqlPreview />
-			<DescriptionPreview />
-			<SearchTagsPreview selectedTags={selectedTags} setSelectedTags={setSelectedTags} />
-			<EditReport />
+			<Modals
+				searchTagsData={{
+					selectedTags: selectedTags,
+					setSelectedTags: setSelectedTags
+				}}
+				refreshReports={handleRefreshReports}
+			/>
 		</>
 	)
 }
