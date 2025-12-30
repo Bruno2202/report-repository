@@ -1,73 +1,88 @@
-# React + TypeScript + Vite
+# 📊 Report Repository
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicação **front-end** construída com **React + Vite** para **gerenciar, navegar e manter relatórios** (XML + SQL), oferecendo **preview**, **edição de metadados** e **upload** de novos relatórios de forma centralizada e intuitiva.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ✨ Principais Funcionalidades
 
-## React Compiler
+* 🔎 **Listagem e busca avançada** por título, conteúdo XML, descrição e tags.
+* 📝 **Pré-visualização de descrições em Markdown**.
+* 💾 **Pré-visualização e download de arquivos SQL**.
+* ✏️ **Edição de metadados do relatório** (título, tipo, tags e descrição).
+* ⬆️ **Upload de novos relatórios** com XML, SQL e metadados.
+* 📂 **Organização por paths de relatórios**, permitindo múltiplas origens/pastas.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## 🛠️ Tecnologias Utilizadas
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+* ⚛️ **React 19** (JSX / TSX)
+* ⚡ **Vite**
+* 🧠 **TypeScript** (modo estrito)
+* 🎨 **Tailwind CSS** + plugin typography
+* 🌐 **Axios** (requisições HTTP)
+* 🔔 **react-hot-toast** (notificações)
+* 🧾 **react-markdown + remark-gfm** (renderização Markdown)
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+---
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## 🚀 Como Rodar o Projeto Localmente
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### 1️⃣ Instalar dependências
+
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 2️⃣ Rodar em modo desenvolvimento
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run dev
 ```
+
+### 3️⃣ Build de produção
+
+```bash
+npm run build
+```
+
+### 4️⃣ Lint
+
+```bash
+npm run lint
+```
+
+---
+
+## ⚙️ Configuração e Variáveis de Ambiente
+
+Crie um arquivo `.env` na raiz do projeto ou defina as variáveis no ambiente:
+
+```env
+VITE_API_DOMAIN=https://api.exemplo.com
+VITE_DEFAULT_REPORT_PATH=/default/path
+```
+
+* **VITE_API_DOMAIN** — URL base da API.
+* **VITE_DEFAULT_REPORT_PATH** — Path padrão exibido na Sidebar.
+
+---
+
+## 🌐 Comunicação com a API
+
+* Uploads utilizam **multipart/form-data**.
+* Headers customizados (`X-Report-Path`) são configurados automaticamente.
+* Centralização das chamadas em **ReportService**.
+
+---
+
+## 🤝 Contribuição
+
+* Utilize **TypeScript em modo estrito**.
+* Mantenha o padrão de código e organização existente.
+* Execute `npm run lint` antes de abrir um Pull Request.
+
+---
+
+✨ *Report Repository — gerenciamento de relatórios com foco em organização, produtividade e clareza.*
