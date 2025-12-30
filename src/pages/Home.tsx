@@ -47,7 +47,8 @@ export const Home: React.FC = () => {
 					const matchesText =
 						report.folder.toLowerCase().includes(search) ||
 						(report.xml && report.xml.toLowerCase().includes(search)) ||
-						(report.description && report.description.toLowerCase().includes(search));
+						(report.description && report.description.toLowerCase().includes(search)) ||
+						(report.title && report.title.toLowerCase().includes(search));
 
 					const matchesTags = selectedTags.length === 0 ||
 						selectedTags.every(sTag =>
@@ -102,7 +103,6 @@ export const Home: React.FC = () => {
 						<div className='flex w-full h-full items-center justify-center'>
 							<img
 								src="/assets/img/loading.gif"
-								alt="Carregando..."
 								className="w-12 h-12 object-contain opacity-85"
 							/>
 						</div>

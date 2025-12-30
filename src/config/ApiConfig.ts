@@ -7,4 +7,12 @@ const api = axios.create({
     }
 });
 
+api.interceptors.request.use((config) => {
+    const reportsPath = localStorage.getItem("reportsPath");
+    if (reportsPath) {
+        config.headers["X-Report-Path"] = reportsPath;
+    }
+    return config;
+});
+
 export default api;

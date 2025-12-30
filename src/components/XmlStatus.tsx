@@ -25,9 +25,7 @@ const XmlStatus: React.FC<XmlStatusProps> = ({ report }) => {
         >
             {report.hasXml ? (
                 <>
-                    <p className="font-semibold text-success group-hover:hidden">
-                        XML OK
-                    </p>
+                    <p className="font-semibold text-success group-hover:hidden">XML OK</p>
 
                     <Download
                         size={16}
