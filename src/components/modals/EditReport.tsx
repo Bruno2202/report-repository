@@ -27,7 +27,7 @@ const EditReport: React.FC = () => {
 
     useEffect(() => {
         if (report) {
-            setTitle(report.title || report.xml || "");
+            setTitle(report.title || "");
             setDescription(report.description || "");
             setSelectedTags(report.tags || []);
             setType(report.type || 'R');

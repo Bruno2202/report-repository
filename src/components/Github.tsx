@@ -1,6 +1,6 @@
 import { GrGithub } from "react-icons/gr";
 
-const Footer: React.FC = () => {
+const Github: React.FC = () => {
     return (
         <div className="flex flex-col gap-2 items-center justify-center text-dark-gray text-xs cursor-pointer">
             <div
@@ -14,4 +14,4 @@ const Footer: React.FC = () => {
     );
 }
 
-export default Footer;
+export default Github;
