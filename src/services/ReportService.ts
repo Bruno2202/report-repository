@@ -4,6 +4,14 @@ import type { ReportResponseDto } from "../dtos/ReportReponseDto";
 import type { ReportModel } from "../models/ReportModel";
 
 export class ReportService {
+    static getReportsPath(): string {
+        return localStorage.getItem("reportsPath") || import.meta.env.VITE_DEFAULT_REPORT_PATH;
+    }
+
+    static setReportsPath(newPath: string) {
+        localStorage.setItem("reportsPath", newPath);
+    }
+
     static async getReports(): Promise<ReportModel[]> {
         try {
             const res: AxiosResponse<ReportResponseDto> = await api.get("/list");
@@ -43,23 +51,38 @@ export class ReportService {
     }
 
     static async downloadFile(folder: string, filename: string) {
-        const url = `${import.meta.env.VITE_API_DOMAIN}/download/${folder}/${filename}`;
-        const response = await fetch(url);
+        const domain = import.meta.env.VITE_API_DOMAIN;
+        const reportsPath = localStorage.getItem("reportsPath") || "";
 
-        if (!response.ok) {
-            console.error("Erro ao baixar arquivo");
-            return;
+        const baseUrl = domain.endsWith('/') ? domain.slice(0, -1) : domain;
+        const url = `${baseUrl}/download/${folder}/${filename}`;
+
+        try {
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'X-Report-Path': reportsPath
+                }
+            });
+
+            if (!response.ok) {
+                console.error("Erro ao baixar:", response.status);
+                return;
+            }
+
+            const blob = await response.blob();
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(link.href);
+        } catch (err) {
+            console.error("Erro de conexão:", err);
         }
-
-        const blob = await response.blob();
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = filename;
-        link.click();
-
-        URL.revokeObjectURL(link.href);
     }
-    
+        
     static async createReport(
         xml: File | null, 
         sql: File | null, 

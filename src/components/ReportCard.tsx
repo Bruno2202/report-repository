@@ -4,6 +4,7 @@ import XmlStatus from "./XmlStatus";
 import { ReportContext } from "../contexts/ReportContext";
 import type { ReportModel } from "../models/ReportModel";
 import toast from "react-hot-toast";
+import Button from "./buttons/Button";
 
 interface ReportCardProps {
     report: ReportModel
@@ -14,13 +15,29 @@ const ReportCard: React.FC<ReportCardProps> = ({ report }) => {
     const { openModal } = useContext(ModalContext)!;
 
     function handleCopyFolderPath() {
-        if (typeof navigator !== "undefined" && navigator.clipboard) {
-            navigator.clipboard.writeText(report.folderPath)
-                .then(() => toast("🔗 Caminho copiado"))
-                .catch(() => toast("❌ Erro ao copiar"));
-        } else {
-            toast("❌ Clipboard API não disponível");
+        const textArea = document.createElement("textarea");
+        textArea.value = report.folderPath;
+
+        textArea.style.position = "fixed";
+        textArea.style.left = "-9999px";
+        textArea.style.top = "0";
+        document.body.appendChild(textArea);
+
+        textArea.focus();
+        textArea.select();
+
+        try {
+            const successful = document.execCommand('copy');
+            if (successful) {
+                toast("🔗 Caminho copiado");
+            } else {
+                toast("❌ Erro ao copiar");
+            }
+        } catch (err) {
+            toast("❌ Erro ao copiar: " + err);
         }
+
+        document.body.removeChild(textArea);
     }
 
     return (
@@ -35,7 +52,7 @@ const ReportCard: React.FC<ReportCardProps> = ({ report }) => {
                     </a>
                     <div className="flex flex-col gap-2">
                         <p className="text-sm text-gray font-semibold truncate overflow-hidden max-w-7/8">
-                            XML: {report.xml || "XML não informado"}
+                            {report.title || "Título não informado"}
                         </p>
                         <p className="text-xs text-gray font-medium truncate overflow-hidden">
                             {report.description || "Nenhuma descrição encontrada."}
@@ -47,33 +64,30 @@ const ReportCard: React.FC<ReportCardProps> = ({ report }) => {
                 </div>
             </div>
             <div className="border-t border-border-dark mt-8 pt-4 flex gap-2">
-                <button
-                    className="flex flex-1 items-center justify-center rounded-xl py-2 border bg-light-black border-border-dark cursor-pointer text-xs hover:border-border-hover transition-colors text-white/75 hover:text-white"
+                <Button
                     onClick={() => {
                         setReport(report)
                         openModal("DescriptionPreview")
                     }}
-                >
-                    🗒️ Ler
-                </button>
-                <button
-                    className="flex flex-1 items-center justify-center rounded-xl py-2 border bg-light-black border-border-dark cursor-pointer text-xs hover:border-border-hover transition-colors text-white/75 hover:text-white"
+                    text="🗒️ Ler"
+                    variant="outlineDark"
+                />
+                <Button
                     onClick={() => {
                         setReport(report)
                         openModal("EditReport")
                     }}
-                >
-                    ✏️ Editar
-                </button>
-                <button
-                    className="flex flex-1 items-center justify-center rounded-xl py-2 border bg-light-black border-border-dark cursor-pointer text-xs hover:border-border-hover transition-colors text-white/75 hover:text-white"
+                    text="✏️ Editar"
+                    variant="outlineDark"
+                />
+                <Button
                     onClick={() => {
                         setReport(report)
                         openModal("SqlPreview")
                     }}
-                >
-                    💣 SQL
-                </button>
+                    text="💣 SQL"
+                    variant="outlineDark"
+                />
             </div>
         </div >
     );
