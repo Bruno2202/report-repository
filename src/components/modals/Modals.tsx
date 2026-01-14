@@ -1,7 +1,7 @@
 import type React from "react";
 import SqlPreview from "./SqlPreview";
 import DescriptionPreview from "./DescriptionPreview";
-import EditReport from "./EditReport";
+import EditReport from "./EditReport/EditReport";
 import type { TagModel } from "../../models/TagModel";
 import SearchTagsPreview from "./SearchTagsPreview";
 import AddReport from "./AddReport";

@@ -8,6 +8,8 @@ const CATEGORIES = {
     LJ: "Loja",
     VEND: "Vendedor",
     PROMO: "Promoção",
+    FORN: "Fornecedor",
+    CONV: "Convênio",
 } as const;
 
 export const productTags: TagModel[] = [
@@ -31,18 +33,34 @@ export const productTags: TagModel[] = [
     { id: "prod_unidade", name: "Unidade", category: CATEGORIES.PROD },
     { id: "prod_giro", name: "Giro", category: CATEGORIES.PROD },
     { id: "prod_curva", name: "Curva", category: CATEGORIES.PROD },
+    { id: "prod_perm_desconto", name: "Produto Permite Desconto", category: CATEGORIES.PROD },
+    { id: "prod_perm_ped_elet", name: "Produto Permite Pedido Eletrônico", category: CATEGORIES.PROD },
+    { id: "prod_pbm", name: "PBM Produto", category: CATEGORIES.PROD },
+    { id: "prod_sit", name: "Situação Produto", category: CATEGORIES.PROD },
 ];
 
 export const costumerTags: TagModel[] = [
     { id: "cli_nome_cli", name: "Nome Cliente", category: CATEGORIES.CLI},
     { id: "cli_cod_cli", name: "Cod. Cliente", category: CATEGORIES.CLI},
-    { id: "cli_cpf_cnpj", name: "CPF/CNPJ", category: CATEGORIES.CLI}
+    { id: "cli_cpf_cnpj", name: "CPF/CNPJ", category: CATEGORIES.CLI},
+    { id: "cli_rg", name: "RG", category: CATEGORIES.CLI},
+    { id: "cli_dt_nasc", name: "Data Nascimento", category: CATEGORIES.CLI},
+    { id: "cli_sit", name: "Situação Cliente", category: CATEGORIES.CLI},
+    { id: "cli_cat", name: "Categoria Cliente", category: CATEGORIES.CLI},
+    { id: "cli_tipo", name: "Tipo Cliente", category: CATEGORIES.CLI},
+    { id: "cli_rest", name: "Restrição Cliente", category: CATEGORIES.CLI},
+    { id: "cli_obs", name: "Observação Cliente", category: CATEGORIES.CLI},
+    { id: "cli_end", name: "Endereço Cliente", category: CATEGORIES.CLI},
+    { id: "cli_tel", name: "Telefone Cliente", category: CATEGORIES.CLI},
 ];
 
 export const purchaseTags: TagModel[] = [
     { id: "comp_num_nota", name: "Num. Nota", category: CATEGORIES.COMP },
     { id: "comp_dt_compra", name: "Data Compra", category: CATEGORIES.COMP },
-    { id: "comp_qtde_comprada", name: "Qtde. Comprada", category: CATEGORIES.COMP }
+    { id: "comp_qtde_comprada", name: "Qtde. Comprada", category: CATEGORIES.COMP },
+    { id: "comp_valor_total", name: "Valor Total da Nota", category: CATEGORIES.COMP },
+    { id: "comp_valor_unitário", name: "Valor Unitário", category: CATEGORIES.COMP },
+    { id: "comp_valor_bruto", name: "Valor Bruto", category: CATEGORIES.COMP },
 ]
 
 export const saleTags: TagModel[] = [
@@ -57,6 +75,14 @@ export const saleTags: TagModel[] = [
     { id: "venda_cmv", name: "CMV", category: CATEGORIES.VENDA },
     { id: "venda_perc_desconto", name: "% Desconto", category: CATEGORIES.VENDA },
     { id: "venda_valor_ICMS", name: "Valor ICMS", category: CATEGORIES.VENDA },
+    { id: "venda_valor_comis", name: "Valor Comissão", category: CATEGORIES.VENDA },
+    { id: "venda_perc_comis", name: "% Comissão", category: CATEGORIES.VENDA },
+    { id: "venda_cod_caixa", name: "Cod. Caixa", category: CATEGORIES.VENDA },
+    { id: "venda_cmv_perc", name: "% CMV", category: CATEGORIES.VENDA },
+    { id: "venda_mc_perc", name: "% MC", category: CATEGORIES.VENDA },
+    { id: "venda_valor_frete", name: "Valor Frete", category: CATEGORIES.VENDA },
+    { id: "venda_forma_pagamento", name: "Forma de Pagamento", category: CATEGORIES.VENDA },
+    { id: "venda_origem", name: "Origem da Venda", category: CATEGORIES.VENDA },
 ]
 
 export const storeTags: TagModel[] = [
@@ -77,8 +103,25 @@ export const promotionTags: TagModel[] = [
     { id: "promo_valor_promo", name: "Valor Promoção", category: CATEGORIES.PROMO },
     { id: "promo_tabloide", name: "Tabloide", category: CATEGORIES.PROMO },
     { id: "promo_PBM", name: "PBM Promoção", category: CATEGORIES.PROMO },
+    { id: "promo_perc_mkp", name: "% MKP Promoção", category: CATEGORIES.PROMO },
 ]
 
+export const supplierTags: TagModel[] = [
+    { id: "sup_cod_fornecedor", name: "Cod. Fornecedor", category: CATEGORIES.FORN },
+    { id: "sup_nome_fornecedor", name: "Nome Fornecedor", category: CATEGORIES.FORN },
+    { id: "sup_cnpj_fornecedor", name: "CNPJ Fornecedor", category: CATEGORIES.FORN },
+]
+
+export const covenantTags: TagModel[] = [
+    { id: "conv_cod_emp", name: "Cod. Empresa", category: CATEGORIES.CONV },
+    { id: "conv_data_fech", name: "Data Fechamento", category: CATEGORIES.CONV },
+    { id: "conv_data_venc", name: "Data Vencimento", category: CATEGORIES.CONV },
+    { id: "conv_cnpj_emp", name: "CNPJ Empresa", category: CATEGORIES.CONV },
+    { id: "conv_razap_emp", name: "Razão Social Empresa", category: CATEGORIES.CONV },
+    { id: "conv_fanta_emp", name: "Nome Fantasia Empresa", category: CATEGORIES.CONV },
+    { id: "conv_sit", name: "Situação Empresa", category: CATEGORIES.CONV },
+    { id: "conv_valor_fechamento", name: "Valor Fechamento", category: CATEGORIES.CONV },
+]
 
 export const reportTags: TagModel[] = [
     ...productTags,
@@ -87,5 +130,7 @@ export const reportTags: TagModel[] = [
     ...saleTags,
     ...storeTags,
     ...sellerTags,
-    ...promotionTags
+    ...promotionTags,
+    ...supplierTags,
+    ...covenantTags,
 ];

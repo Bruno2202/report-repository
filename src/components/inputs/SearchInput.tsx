@@ -1,15 +1,33 @@
+import { X } from "lucide-react";
+
 interface SearchInputProps {
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    searchParam: string;
+    setSearchParam: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const SearchInput: React.FC<SearchInputProps> = ({ onChange }) => {
+const SearchInput: React.FC<SearchInputProps> = ({ onChange, searchParam, setSearchParam }) => {
     return (
-        <input
-            type="search"
-            placeholder="🔍 Busque por nome, xml ou conteúdo da descrição..."
-            onChange={onChange}
-            className="py-2 px-4 border border-border-dark rounded-xl w-full outline-none focus:border-blue transition-colors bg-card-dark placeholder:text-dark-gray text-white"
-        />
+        <div className="flex flex-row w-full border border-border-dark rounded-xl bg-card-dark focus-within:border-blue transition-all">
+            <input
+                type="text"
+                placeholder="🔍 Busque por nome, xml ou conteúdo da descrição..."
+                onChange={onChange}
+                value={searchParam}
+                className="py-2 px-4 w-full outline-none bg-transparent placeholder:text-dark-gray text-white"
+            />
+            <div 
+                className="flex items-center justify-center w-fit px-4"
+                onClick={() => setSearchParam("")}
+            >
+                {searchParam && (
+                    <X 
+                        size={20}
+                        className="text-blue cursor-pointer hover:text-blue-hover transition-colors" 
+                    />
+                )}
+            </div>
+        </div>
     );
 }
 

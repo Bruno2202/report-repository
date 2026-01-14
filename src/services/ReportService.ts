@@ -22,31 +22,45 @@ export class ReportService {
         }
     }
 
-    static async updateReport(folder: string, report: ReportModel): Promise<ReportModel> {
+    static async updateReport(
+        folder: string,
+        report: ReportModel,
+        xmlFile?: File | null,
+        sqlFile?: File | null
+    ): Promise<ReportModel> {
         try {
-            const {
-                description,
-                folderPath,
-                type,
-                tags,
-                title
-            } = report;
+            const formData = new FormData();
 
-            const res: AxiosResponse<ReportModel> = await api.put("/save", {
-                folder,
-                report: {
-                    description,
-                    folderPath,
-                    type,
-                    tags,
-                    title
-                }
+            formData.append('folder', folder);
+
+            const reportMetadata = {
+                description: report.description,
+                folderPath: report.folderPath,
+                type: report.type,
+                tags: report.tags,
+                title: report.title
+            };
+
+            formData.append('report', JSON.stringify(reportMetadata));
+
+            if (xmlFile) {
+                formData.append('xml', xmlFile);
+            }
+
+            if (sqlFile) {
+                formData.append('sql', sqlFile);
+            }
+
+            const res: AxiosResponse<ReportModel> = await api.put("/save", formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
             });
 
             return res.data;
         } catch (error) {
-            console.error(error);
-            return {} as ReportModel;
+            console.error("Erro ao atualizar relatório:", error);
+            throw error;
         }
     }
 
@@ -82,25 +96,25 @@ export class ReportService {
             console.error("Erro de conexão:", err);
         }
     }
-        
+
     static async createReport(
-        xml: File | null, 
-        sql: File | null, 
-        title: string, 
-        type: string, 
+        xml: File | null,
+        sql: File | null,
+        title: string,
+        type: string,
         description: string
     ) {
         const formData = new FormData();
-        
+
         if (xml) formData.append("xml", xml);
         if (sql) formData.append("sql", sql);
-        
+
         const metadata = {
             title: title || "Sem Título",
             type: type,
             description: description
         };
-        
+
         formData.append("metadata", JSON.stringify(metadata));
 
         const res: AxiosResponse<ReportResponseDto> = await api.post("/create", formData, {
@@ -109,6 +123,20 @@ export class ReportService {
             },
         });
 
+        return res.data;
+    }
+
+    static async deleteFile(folder: string, filename: string) {
+        const res = await api.delete("/delete-file", {
+            data: { folder, filename }
+        });
+        return res.data;
+    }
+
+    static async deleteReport(folder: string) {
+        const res = await api.delete("/delete-report", {
+            data: { folder }
+        });
         return res.data;
     }
 }

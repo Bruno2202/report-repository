@@ -11,6 +11,7 @@ import type { TagModel } from '../models/TagModel'
 import Sidebar from '../components/Sidebar'
 import Modals from '../components/modals/Modals'
 import { ReportContext } from '../contexts/ReportContext'
+import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
 
 export const Home: React.FC = () => {
 	const [filteredReports, setFilteredReports] = useState<ReportModel[]>([])
@@ -85,7 +86,11 @@ export const Home: React.FC = () => {
 					refreshReports={handleRefreshReports}
 				/>
 				<main className='flex flex-col flex-1 px-8 py-6 bg-body-dark gap-4'>
-					<SearchInput onChange={(e) => setSearchParam(e.target.value)} />
+					<SearchInput
+						onChange={(e) => setSearchParam(e.target.value)}
+						searchParam={searchParam}
+						setSearchParam={setSearchParam}
+					/>
 					<div className='flex flex-row flex-wrap items-center w-fit gap-2'>
 						{selectedTags.length > 0 &&
 							selectedTags.map((tag) => (
@@ -107,17 +112,21 @@ export const Home: React.FC = () => {
 							/>
 						</div>
 					) : (
-						<div className='grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4 overflow-y-auto pr-2 pt-2'>
-							{
-								filteredReports && filteredReports.length > 0 && (
-									filteredReports.map((report: ReportModel, index) => (
-										<ReportCard
-											key={index}
-											report={report}
-										/>
-									))
-								)
-							}
+						<div className='overflow-auto pt-2 pr-2'>
+							{filteredReports && filteredReports.length > 0 ? (
+								<ResponsiveMasonry
+									columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }}
+									style={{ width: '100%' }}
+								>
+									<Masonry gutter="16px">
+										{filteredReports.map((report, index) => (
+											<ReportCard key={index} report={report} />
+										))}
+									</Masonry>
+								</ResponsiveMasonry>
+							) : (
+								<div className="text-gray-500 text-center mt-10">Nenhum relatório encontrado.</div>
+							)}
 						</div>
 					)}
 				</main>
