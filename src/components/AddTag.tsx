@@ -10,12 +10,26 @@ const AddTag: React.FC<AddTagProps> = ({ modal }) => {
     const { openModal } = useContext(ModalContext)!;
 
     return (
-        <span
-            className="flex p-1 bg-blue/12 text-sm rounded-full gap-1 items-center select-none cursor-pointer border border-blue ml-2"
+        <button
+            type="button"
+            className={`
+                group flex items-center justify-center
+                p-1.5 ml-2 
+                bg-blue/10 hover:bg-blue/20 
+                text-blue border border-blue/30 hover:border-blue
+                rounded-full transition-all duration-200 
+                hover:scale-110 active:scale-95
+                shadow-sm hover:shadow-blue/20
+                cursor-pointer outline-none
+            `}
             onClick={() => openModal(modal)}
+            title="Adicionar Tag"
         >
-            <Plus size={16} className="text-blue" />
-        </span>
+            <Plus 
+                size={16} 
+                className="transition-transform duration-200 group-hover:rotate-90" 
+            />
+        </button>
     );
 }
 

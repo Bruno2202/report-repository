@@ -26,7 +26,11 @@ const ReportTagsPreview: React.FC<ReportTagsPreview> = ({ selectedTags, setSelec
         isOpenModal("ReportTagsPreview") && (
             <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-40 backdrop-blur-xs">
                 <div className="flex flex-col z-50 gap-4 w-1/3 max-w-4xl">
-                    <SearchTagInput onChange={(e) => setSearchParam(e.target.value)} />
+                    <SearchTagInput 
+                        onChange={(e) => setSearchParam(e.target.value)}
+                        searchParam={searchParam}
+                        setSearchParam={setSearchParam}
+                    />
 
                     <div className="flex flex-col text-white font-medium gap-2 bg-aside-dark border border-border-dark rounded-xl p-4 max-h-96 overflow-y-auto">
                         {searchResult.length > 0 ? (

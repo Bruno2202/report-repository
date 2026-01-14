@@ -41,7 +41,7 @@ const ReportCard: React.FC<ReportCardProps> = ({ report }) => {
     }
 
     return (
-        <div className="bg-card-dark border border-border-dark rounded-xl p-4 text-white cursor-pointer hover:-translate-y-1 hover:shadow-2xl transition-all">
+        <div className="bg-card-dark border border-border-dark rounded-xl p-4 text-white cursor-pointer hover:-translate-y-1 hover:shadow-2xl transition-all w-full">
             <div className="flex flex-row">
                 <div className="flex flex-col w-2/3">
                     <a
@@ -59,10 +59,23 @@ const ReportCard: React.FC<ReportCardProps> = ({ report }) => {
                         </p>
                     </div>
                 </div>
+
                 <div className="flex flex-1 items-start justify-end w-1/3">
                     <XmlStatus report={report} />
                 </div>
             </div>
+            {report.tags.length > 0 && (
+                <div className="flex flex-wrap gap-1 mt-4">
+                    {report.tags.map((tag) => (
+                        <span 
+                            key={tag.id} 
+                            className="px-2 py-1 font-semibold bg-blue/12 text-blue text-xs rounded-full whitespace-nowrap select-none inline-block"
+                        >
+                            {tag.name}
+                        </span>
+                    ))}
+                </div>
+            )}
             <div className="border-t border-border-dark mt-8 pt-4 flex gap-2">
                 <Button
                     onClick={() => {

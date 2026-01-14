@@ -68,7 +68,7 @@ const Sidebar: React.FC<SidebarProps> = ({ refreshReports }) => {
     };
 
     return (
-        <aside className='flex flex-col p-4 border-rd ark:border-gray-700 w-72 h-full bg-aside-dark border border-border-dark'>
+        <aside className='flex flex-col p-4 border-rd ark:border-gray-700 w-72 h-full bg-aside-dark border-0 border-r border-border-dark'>
             <h1 className='text-lg font-bold text-white mb-2'>📂 Relatórios</h1>
 
             <div 
