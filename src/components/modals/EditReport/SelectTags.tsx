@@ -1,5 +1,5 @@
 import type { TagModel } from "../../../models/TagModel";
-import AddTag from "../../AddTag";
+import AddTag from "../../buttons/AddTag";
 import FieldTag from "../../Field";
 
 interface SelectTagsProps {
@@ -16,7 +16,6 @@ const SelectTags: React.FC<SelectTagsProps> = ({ selectedTags, setSelectedTags }
                         <FieldTag
                             key={key}
                             tag={tag}
-                            selectedTags={selectedTags}
                             setSelectedTags={setSelectedTags}
                         />
                     ))

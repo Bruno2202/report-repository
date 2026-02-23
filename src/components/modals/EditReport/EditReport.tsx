@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import { X } from "lucide-react";
+import { Save, X } from "lucide-react";
 import { ReportContext } from "../../../contexts/ReportContext";
 import { ModalContext } from "../../../contexts/ModalContext";
 import { ReportService } from "../../../services/ReportService";
@@ -84,7 +84,7 @@ const EditReport: React.FC = () => {
             await ReportService.deleteReport(report.folder);
             await handleRefreshReports();
             toast.success("Relatório excluído com sucesso!");
-            closeModal("ConfirmDelete")
+            closeModal("ConfirmDeleteReport");
             handleCloseModal();
         } catch (error) {
             console.error(error);
@@ -217,16 +217,18 @@ const EditReport: React.FC = () => {
 
                         <div className="flex justify-between mt-6">
                             <Button
-                                onClick={() => openModal("ConfirmDelete")}
+                                onClick={() => openModal("ConfirmDeleteReport")}
                                 text="Excluir Relatório"
                                 variant="danger"
                             />
                             <Button
                                 onClick={handleUpdateReport}
-                                text="💾 Salvar Alterações"
+                                text="Salvar Alterações"
                                 variant="primary"
                                 loading={updating}
                                 className="min-w-[160px]"
+                                icon={Save}
+                                
                             />
                         </div>
                     </div>
@@ -237,11 +239,15 @@ const EditReport: React.FC = () => {
                 selectedTags={selectedTags}
                 setSelectedTags={setSelectedTags}
             />
-            <ConfirmDelete
-                report={report}
-                deleteFunction={handleDeleteReport}
-                loading={deleting}
-            />
+            {isOpenModal("ConfirmDeleteReport") &&
+                <ConfirmDelete
+                    title="Relatório"
+                    deleteFunction={handleDeleteReport}
+                    loading={deleting}
+                    dataTile={report.title}
+                    modalName="ConfirmDeleteReport"
+                />
+            }
         </div>
     );
 }

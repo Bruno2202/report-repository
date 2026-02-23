@@ -1,5 +1,5 @@
 export interface TagModel {
-    id: string;
+    id: number;
     name: string;
     category: string;
 }

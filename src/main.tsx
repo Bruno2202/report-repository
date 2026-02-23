@@ -6,6 +6,7 @@ import ModalProvider from './contexts/ModalContext';
 import SearchProvider from './contexts/SearchContext';
 import ReportProvider from './contexts/ReportContext';
 import { Toaster } from 'react-hot-toast';
+// import Maintenance from './pages/Maintenance';
 
 const root = document.getElementById("root");
 
@@ -19,6 +20,7 @@ ReactDOM.createRoot(root!).render(
 							path="/"
 							element={
 								<Home />
+								// <Maintenance/>
 							}
 						/>
 					</Routes>

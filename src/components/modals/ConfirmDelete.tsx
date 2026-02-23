@@ -2,18 +2,17 @@ import React, { useContext } from "react";
 import { AlertTriangle } from "lucide-react";
 import { ModalContext } from "../../contexts/ModalContext";
 import Button from "../buttons/Button";
-import type { ReportModel } from "../../models/ReportModel";
 
 interface ConfirmDeleteProps {
-    report: ReportModel;
+    title: string;
     deleteFunction: () => void;
     loading?: boolean;
+    dataTile: string;
+    modalName: string;
 }
 
-const ConfirmDelete: React.FC<ConfirmDeleteProps> = ({ report, deleteFunction, loading }) => {
-    const { isOpenModal, closeModal } = useContext(ModalContext)!;
-
-    if (!isOpenModal("ConfirmDelete")) return null;
+const ConfirmDelete: React.FC<ConfirmDeleteProps> = ({ title, deleteFunction, loading, dataTile, modalName }) => {
+    const { closeModal } = useContext(ModalContext)!;
 
     return (
         <div className="fixed inset-0 flex items-center justify-center z-50">
@@ -28,10 +27,10 @@ const ConfirmDelete: React.FC<ConfirmDeleteProps> = ({ report, deleteFunction, l
                     </div>
 
                     <div className="space-y-2">
-                        <h2 className="text-xl font-bold">Excluir Relatório?</h2>
+                        <h2 className="text-xl font-bold">Excluir {title}?</h2>
                         <p className="text-gray-400 text-sm leading-relaxed">
-                            Você está prestes a excluir o relatório <span className="text-white font-semibold">"{report.title}"</span>.
-                            Esta ação é irreversível e removerá todos os arquivos (XML, SQL) e metadados da pasta.
+                            Você está prestes a excluir <span className="text-white font-semibold">"{dataTile}"</span>.
+                            Esta ação é irreversível e o removerá permanentemente do sistema.
                         </p>
                     </div>
 
@@ -39,11 +38,11 @@ const ConfirmDelete: React.FC<ConfirmDeleteProps> = ({ report, deleteFunction, l
                         <Button
                             text="Cancelar"
                             variant="outline"
-                            onClick={() => closeModal("ConfirmDelete")}
+                            onClick={() => closeModal(modalName)}
                             className="w-full"
                         />
                         <Button
-                            text="Excluir Relatório"
+                            text={`Excluir ${title}`}
                             variant="danger"
                             onClick={deleteFunction}
                             className="w-full"

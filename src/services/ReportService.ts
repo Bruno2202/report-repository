@@ -2,6 +2,7 @@ import type { AxiosResponse } from "axios";
 import api from "../config/ApiConfig";
 import type { ReportResponseDto } from "../dtos/ReportReponseDto";
 import type { ReportModel } from "../models/ReportModel";
+import type { TagModel } from "../models/TagModel";
 
 export class ReportService {
     static getReportsPath(): string {
@@ -85,9 +86,18 @@ export class ReportService {
             }
 
             const blob = await response.blob();
+
+            let forcedFilename = filename;
+            if (filename.toLowerCase().endsWith('.xml')) {
+                forcedFilename = filename.replace(/\.[^/.]+$/, "") + ".xml";
+            } else if (filename.toLowerCase().endsWith('.sql')) {
+                forcedFilename = filename.replace(/\.[^/.]+$/, "") + ".sql";
+            }
             const link = document.createElement("a");
             link.href = URL.createObjectURL(blob);
-            link.download = filename;
+            
+            link.download = forcedFilename; 
+            
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -138,5 +148,45 @@ export class ReportService {
             data: { folder }
         });
         return res.data;
+    }
+
+    static async getTags() {
+        try {
+            const res = await api.get("/tags");
+            return res.data.tags as TagModel[];
+        } catch (error) {
+            console.error(error);
+            return [];
+        }
+    }
+
+    static async createTag(tag: { name: string; category_id: string }) {
+        try {
+            const res = await api.post("/tags", tag);
+            return res.data;
+        } catch (error) {
+            console.error("Erro ao criar tag:", error);
+            throw error;
+        }
+    }
+
+    static async createCategory(category: { name: string }) {
+        try {
+            const res = await api.post("/categories", category);
+            return res.data;
+        } catch (error) {
+            console.error("Erro ao criar categoria:", error);
+            throw error;
+        }
+    }
+
+    static async getCategories() {
+        try {
+            const res = await api.get("/categories");
+            return res.data.categories;
+        } catch (error) {
+            console.error(error);
+            return [];
+        }
     }
 }

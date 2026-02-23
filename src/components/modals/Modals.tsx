@@ -5,6 +5,7 @@ import EditReport from "./EditReport/EditReport";
 import type { TagModel } from "../../models/TagModel";
 import SearchTagsPreview from "./SearchTagsPreview";
 import AddReport from "./AddReport";
+import HowToUse from "./HowToUse";
 
 interface ModalsProps {
     searchTagsData: {
@@ -27,6 +28,7 @@ const Modals: React.FC<ModalsProps> = ({ searchTagsData, refreshReports }) => {
             <AddReport
                 refreshReports={refreshReports}
             />
+            <HowToUse />
         </>
     )
 }

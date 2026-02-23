@@ -1,23 +1,47 @@
-import { X } from "lucide-react"
+import { X } from "lucide-react";
 import type { TagModel } from "../models/TagModel";
 
 interface FieldTagProps {
     tag: TagModel;
-    selectedTags: TagModel[];
-    setSelectedTags: React.Dispatch<React.SetStateAction<TagModel[]>>
+    setSelectedTags: React.Dispatch<React.SetStateAction<TagModel[]>>;
 }
 
-const FieldTag: React.FC<FieldTagProps> = ({ tag, selectedTags, setSelectedTags }) => {
+const FieldTag: React.FC<FieldTagProps> = ({ tag, setSelectedTags }) => {
+    const handleRemove = () => {
+        setSelectedTags(prev => prev.filter(t => t.id !== tag.id));
+    };
+
     return (
-        <span
-            onClick={() => setSelectedTags(selectedTags.filter(t => t.id !== tag.id))}
-            className="flex px-2 py-1 bg-blue/12 text-sm rounded-full gap-1 items-center select-none cursor-pointer"
+        <div
+            className={`
+                group flex items-center gap-1.5 
+                pl-3 pr-1.5 py-1 
+                bg-blue/10 border border-blue/20
+                hover:border-blue/40 hover:bg-blue/20
+                rounded-full transition-colors duration-200
+                cursor-pointer
+            `}
+            onClick={handleRemove}
         >
-            <p className="flex flex-row items-center gap-2 text-blue text-sm hover: font-medium">
-                {tag.name} <X size={16} />
-            </p>
-        </span>
-    )
-}
+            <span className="text-blue text-sm font-medium select-none">
+                {tag.name}
+            </span>
+            
+            <button
+                type="button"
+                className={`
+                    p-0.5 rounded-full
+                    text-blue/60 hover:text-blue hover:bg-blue/20
+                    transition-all duration-200
+                    focus:outline-none focus:ring-2 focus:ring-blue/40
+                    cursor-pointer
+                `}
+                aria-label={`Remover tag ${tag.name}`}
+            >
+                <X size={14} strokeWidth={2.5} />
+            </button>
+        </div>
+    );
+};
 
-export default FieldTag
+export default FieldTag;

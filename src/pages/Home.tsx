@@ -1,6 +1,6 @@
 import SearchInput from '../components/inputs/SearchInput'
 import ReportCard from '../components/ReportCard'
-import AddTag from '../components/AddTag'
+import AddTag from '../components/buttons/AddTag'
 import type React from 'react'
 import { useContext, useEffect, useState } from 'react'
 import { SearchContext } from '../contexts/SearchContext'
@@ -97,7 +97,6 @@ export const Home: React.FC = () => {
 								<FieldTag
 									key={tag.id}
 									tag={tag}
-									selectedTags={selectedTags}
 									setSelectedTags={setSelectedTags}
 								/>
 							))
