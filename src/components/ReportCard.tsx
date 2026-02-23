@@ -5,6 +5,7 @@ import { ReportContext } from "../contexts/ReportContext";
 import type { ReportModel } from "../models/ReportModel";
 import toast from "react-hot-toast";
 import Button from "./buttons/Button";
+import { Code, FileSpreadsheet, Pencil } from "lucide-react";
 
 interface ReportCardProps {
     report: ReportModel
@@ -82,24 +83,27 @@ const ReportCard: React.FC<ReportCardProps> = ({ report }) => {
                         setReport(report)
                         openModal("DescriptionPreview")
                     }}
-                    text="🗒️ Ler"
+                    text="Ler"
                     variant="outlineDark"
+                    icon={FileSpreadsheet}
                 />
                 <Button
                     onClick={() => {
                         setReport(report)
                         openModal("EditReport")
                     }}
-                    text="✏️ Editar"
+                    text="Editar"
                     variant="outlineDark"
+                    icon={Pencil}
                 />
                 <Button
                     onClick={() => {
                         setReport(report)
                         openModal("SqlPreview")
                     }}
-                    text="💣 SQL"
+                    text="SQL"
                     variant="outlineDark"
+                    icon={Code}
                 />
             </div>
         </div >

@@ -8,7 +8,7 @@ interface SearchTagInputProps {
 
 const SearchTagInput: React.FC<SearchTagInputProps> = ({ onChange, searchParam, setSearchParam }) => {
     return (
-        <div className="flex flex-row w-full border border-border-dark rounded-full bg-card-dark focus-within:border-blue transition-all">
+        <div className="flex flex-row w-full border border-border-dark rounded-xl bg-card-dark focus-within:border-blue transition-all">
             <input
                 onChange={onChange}
                 type="text"

@@ -3,7 +3,17 @@ import Button from "./buttons/Button";
 import toast from "react-hot-toast";
 import { ModalContext } from "../contexts/ModalContext";
 import Github from "./Github";
-import { Check, Copy } from "lucide-react";
+import packageInfo from "../../package.json";
+
+import {
+    Check,
+    Copy,
+    FolderOpen,
+    PlusCircle,
+    RefreshCw,
+    HelpCircle,
+    Database
+} from "lucide-react";
 import { ReportService } from "../services/ReportService";
 
 interface SidebarProps {
@@ -13,7 +23,6 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ refreshReports }) => {
     const [currentPath, setCurrentPath] = useState<string>("");
     const [copied, setCopied] = useState(false);
-
     const { openModal } = useContext(ModalContext)!;
 
     useEffect(() => {
@@ -27,7 +36,7 @@ const Sidebar: React.FC<SidebarProps> = ({ refreshReports }) => {
 
     const handleSelectPath = () => {
         const newPath = window.prompt("Digite o seu caminho de rede:", currentPath);
-        
+
         if (newPath) {
             ReportService.setReportsPath(newPath);
             setCurrentPath(newPath);
@@ -36,77 +45,102 @@ const Sidebar: React.FC<SidebarProps> = ({ refreshReports }) => {
         }
     };
 
-    const handleCopyPath = () => {
+    function handleCopyPath() {
         if (!currentPath || currentPath === "Carregando...") return;
+        
+        const textToCopy = currentPath;
+        const textArea = document.createElement("textarea");
+        textArea.value = textToCopy;
+        document.body.appendChild(textArea);
+
+        textArea.focus();
+        textArea.select();
 
         try {
-            const textArea = document.createElement("textarea");
-            textArea.value = currentPath;
-            
-            textArea.style.position = "fixed";
-            textArea.style.left = "-9999px";
-            textArea.style.top = "0";
-            
-            document.body.appendChild(textArea);
-            textArea.focus();
-            textArea.select();
-
             const successful = document.execCommand('copy');
-            document.body.removeChild(textArea);
-
             if (successful) {
-                setCopied(true);
                 toast.success("Caminho copiado!");
+                setCopied(true);
                 setTimeout(() => setCopied(false), 2000);
             } else {
-                throw new Error();
+                toast.error("Falha ao copiar");
             }
         } catch (err) {
-            toast.error("Não foi possível copiar o caminho.");
-            console.error("Fallback de cópia falhou:", err);
+            toast.error("Erro ao copiar");
         }
-    };
+
+        document.body.removeChild(textArea);
+    }
 
     return (
-        <aside className='flex flex-col p-4 border-rd ark:border-gray-700 w-72 h-full bg-aside-dark border-0 border-r border-border-dark'>
-            <h1 className='text-lg font-bold text-white mb-2'>📂 Relatórios</h1>
-
-            <div 
-                onClick={handleCopyPath}
-                className="group relative bg-black/30 p-3 rounded-xl mb-6 border border-white/5 cursor-pointer hover:border-blue/40 hover:bg-black/50 transition-all"
-            >
-                <div className="flex justify-between items-center mb-1">
-                    <p className='text-[10px] uppercase tracking-tighter font-bold text-gray-500'>Caminho de Rede</p>
-                    {copied ? (
-                        <Check size={12} className="text-green-500" />
-                    ) : (
-                        <Copy size={12} className="text-gray-600 group-hover:text-blue-400 transition-colors" />
-                    )}
+        <aside className='flex flex-col w-72 h-full bg-aside-dark border-r border-border-dark'>
+            <div className="p-6 pb-2">
+                <div className="flex items-center gap-3 mb-6">
+                    <div className="p-2 bg-blue/20 rounded-lg">
+                        <Database size={20} className="text-blue" />
+                    </div>
+                    <h1 className='text-xl font-bold text-white tracking-tight'>Relatórios</h1>
                 </div>
-                <p className='text-[11px] font-mono text-blue-400/80 break-all leading-tight'>
-                    {currentPath}
-                </p>
-                <span className="absolute inset-0 bg-blue-400/5 opacity-0 group-hover:opacity-100 rounded-xl transition-opacity" />
-            </div>
-            
-            <div className='flex flex-col text-white gap-4 my-8'>
-                <Button
-                    text="📂 Selecionar Pasta"
-                    onClick={handleSelectPath}
-                />
-                <Button
-                    text="📋 Adicionar Relatório"
-                    onClick={() => openModal("AddReport")}
-                />
-                <Button
-                    onClick={refreshReports}
-                    text="🔄 Atualizar"
-                    variant="outline"
-                />
+
+                <div
+                    onClick={handleCopyPath}
+                    className="group relative bg-black/20 p-3 rounded-xl border border-white/5 cursor-pointer hover:border-blue/30 hover:bg-black/40 transition-all"
+                >
+                    <div className="flex justify-between items-center mb-1.5">
+                        <p className='text-[10px] uppercase tracking-wider font-bold text-gray-500'>Caminho de Rede</p>
+                        {copied ? (
+                            <Check size={12} className="text-green-500" />
+                        ) : (
+                            <Copy size={12} className="text-gray-600 group-hover:text-blue-400 transition-colors" />
+                        )}
+                    </div>
+                    <p className='text-[11px] font-mono text-blue-400/80 break-all leading-tight'>
+                        {currentPath || "Não definido"}
+                    </p>
+                </div>
             </div>
 
-            <div className='flex flex-1 justify-center items-end'>
+            <div className='flex flex-col gap-8 p-4 mt-4'>
+                <div className="flex flex-col gap-3">
+                    <span className="px-2 text-[10px] font-bold text-gray-600 uppercase tracking-widest">Ações</span>
+                    <Button
+                        icon={FolderOpen}
+                        text="Selecionar Pasta"
+                        onClick={handleSelectPath}
+                        className="justify-start px-4"
+                    />
+                    <Button
+                        icon={PlusCircle}
+                        text="Adicionar Relatório"
+                        onClick={() => openModal("AddReport")}
+                        className="justify-start px-4"
+                    />
+                </div>
+
+                <div className="flex flex-col gap-3">
+                    <span className="px-2 text-[10px] font-bold text-gray-600 uppercase tracking-widest">Sistema</span>
+                    <Button
+                        icon={RefreshCw}
+                        onClick={refreshReports}
+                        text="Atualizar Lista"
+                        variant="outline"
+                        className="justify-start px-4"
+                    />
+                    <Button
+                        icon={HelpCircle}
+                        onClick={() => openModal("HowToUse")}
+                        text="Como Usar"
+                        variant="outline"
+                        className="justify-start px-4"
+                    />
+                </div>
+            </div>
+
+            <div className='mt-auto p-6 flex flex-col items-center gap-4 border-t border-white/5'>
                 <Github />
+                <span className="text-[10px] text-gray-600 font-medium">
+                    REPORT REPOSITORY V{packageInfo.version}
+                </span>
             </div>
         </aside>
     );
