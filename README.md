@@ -1,5 +1,7 @@
 # 📁 Report Repository
 
+<img width="1920" height="1080" alt="ReportRepository" src="https://github.com/user-attachments/assets/189105d6-4b0c-421c-b8ff-8cabcc9fc9a9" />
+
 ## Descrição Geral
 
 O Report Repository é uma aplicação front-end desenvolvida para gerenciar, organizar e visualizar relatórios de forma eficiente. Seu objetivo principal é fornecer uma interface intuitiva para listar, buscar, pré-visualizar, editar metadados, fazer upload e organizar diversos tipos de relatórios, com foco em arquivos XML e SQL.
@@ -13,6 +15,8 @@ A aplicação permite que os usuários:
 *   Gerenciem o caminho de rede onde os relatórios estão armazenados.
 
 É uma ferramenta ideal para equipes que precisam de uma solução centralizada para acessar e manter uma coleção de relatórios de forma organizada e acessível.
+
+<img width="1919" height="861" alt="image" src="https://github.com/user-attachments/assets/187f160f-f49a-461f-9929-18a96b53a305" />
 
 ## Tecnologias Usadas
 
