@@ -27,7 +27,7 @@ export class ReportService {
         folder: string,
         report: ReportModel,
         xmlFile?: File | null,
-        sqlFile?: File | null
+        sqlFiles?: File[] | null
     ): Promise<ReportModel> {
         try {
             const formData = new FormData();
@@ -48,8 +48,10 @@ export class ReportService {
                 formData.append('xml', xmlFile);
             }
 
-            if (sqlFile) {
-                formData.append('sql', sqlFile);
+            if (sqlFiles && sqlFiles.length > 0) {
+                sqlFiles.forEach((file) => {
+                    formData.append(`sql`, file);
+                });
             }
 
             const res: AxiosResponse<ReportModel> = await api.put("/save", formData, {
@@ -109,7 +111,7 @@ export class ReportService {
 
     static async createReport(
         xml: File | null,
-        sql: File | null,
+        sql: File[] | null,
         title: string,
         type: string,
         description: string
@@ -117,7 +119,11 @@ export class ReportService {
         const formData = new FormData();
 
         if (xml) formData.append("xml", xml);
-        if (sql) formData.append("sql", sql);
+        if (sql && sql.length > 0) {
+            sql.forEach((file) => {
+                formData.append("sql", file);
+            });
+        }
 
         const metadata = {
             title: title || "Sem Título",

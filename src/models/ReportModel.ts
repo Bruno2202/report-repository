@@ -4,7 +4,7 @@ export interface ReportModel {
     folder: string;
     xml: string;
     hasXml: boolean;
-    sql: string;
+    sqls: {name: string, sql: string}[];
     sqlFile: string;
     description: string;
     folderPath: string;

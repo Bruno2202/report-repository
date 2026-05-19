@@ -15,7 +15,7 @@ interface AddReport {
 
 const AddReport: React.FC<AddReport> = ({ refreshReports }) => {
     const [xml, setXml] = useState<File | null>(null);
-    const [sql, setSql] = useState<File | null>(null);
+    const [sql, setSql] = useState<File[] | null>(null);
     const [dragCounter, setDragCounter] = useState(0);
     const [loading, setLoading] = useState(false);
 
@@ -35,7 +35,7 @@ const AddReport: React.FC<AddReport> = ({ refreshReports }) => {
                 setXml(file);
                 if (!title) setTitle(file.name.replace('.xml', '').replace(/_/g, ' '));
             } else if (name.endsWith('.sql')) {
-                setSql(file);
+                setSql(prev => prev ? [...prev, file] : [file]);
             }
         });
     };
@@ -177,20 +177,36 @@ const AddReport: React.FC<AddReport> = ({ refreshReports }) => {
                             </label>
 
                             {/* SQL */}
-                            <label className={`relative flex flex-col items-center justify-center w-full h-28 border-2 border-dashed rounded-xl cursor-pointer transition-all ${sql ? 'border-green-500/40 bg-green-500/5' : 'border-white/5 bg-white/[0.02] hover:border-blue/40'}`}>
-                                <input type="file" className="hidden" accept=".sql" onChange={handleFileChange} />
-                                {sql ? (
-                                    <div className="flex items-center gap-2 text-green-400 font-medium text-sm">
-                                        <CheckCircle2 size={18} />
-                                        <span className="truncate max-w-[120px]">{sql.name}</span>
-                                    </div>
-                                ) : (
-                                    <div className="text-center">
-                                        <Database className="text-gray-600 mx-auto mb-1" size={20} />
-                                        <span className="text-[11px] text-gray-500 block">SQL de Consulta</span>
+                            <div className="flex flex-col gap-2">
+                                {sql && sql.length > 0 && (
+                                    <div className="space-y-2">
+                                        {sql.map((file, index) => (
+                                            <div key={index} className="flex items-center justify-between gap-2 px-3 py-2 border-2 border-green-500/40 bg-green-500/5 rounded-xl">
+                                                <div className="flex items-center gap-2 text-green-400 font-medium text-sm flex-1">
+                                                    <CheckCircle2 size={16} />
+                                                    <span className="truncate">{file.name}</span>
+                                                </div>
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        setSql(prev => prev?.filter((_, i) => i !== index) || null);
+                                                    }}
+                                                    className="p-1 hover:bg-error/20 rounded text-error transition-colors"
+                                                >
+                                                    <X size={14} />
+                                                </button>
+                                            </div>
+                                        ))}
                                     </div>
                                 )}
-                            </label>
+                                <label className={`relative flex flex-col items-center justify-center w-full h-28 border-2 border-dashed rounded-xl cursor-pointer transition-all ${sql && sql.length > 0 ? 'border-green-500/40 bg-green-500/5' : 'border-white/5 bg-white/[0.02] hover:border-blue/40'}`}>
+                                    <input type="file" className="hidden" accept=".sql" onChange={handleFileChange} multiple />
+                                    <div className="text-center">
+                                        <Database className="text-gray-600 mx-auto mb-1" size={20} />
+                                        <span className="text-[11px] text-gray-500 block">SQL de Consulta {sql && sql.length > 0 ? `(${sql.length})` : ''}</span>
+                                    </div>
+                                </label>
+                            </div>
                         </div>
 
                         {/* Descrição */}

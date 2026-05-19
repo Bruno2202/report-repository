@@ -1,5 +1,5 @@
 import { Download, X } from "lucide-react";
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { ModalContext } from "../../contexts/ModalContext";
 import { ReportContext } from "../../contexts/ReportContext";
 import toast from "react-hot-toast";
@@ -10,11 +10,30 @@ const SqlPreview: React.FC = () => {
     const { isOpenModal, closeModal } = useContext(ModalContext)!;
 
     const [loading, setLoading] = useState<boolean>(false);
+    const [selectedSqlIndex, setSelectedSqlIndex] = useState<number>(0);
+
+    useEffect(() => {
+        if (!isOpenModal("SqlPreview")) return;
+
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === "Escape") {
+                closeModal("SqlPreview");
+            }
+        };
+
+        document.addEventListener("keydown", handleKeyDown);
+        return () => document.removeEventListener("keydown", handleKeyDown);
+    }, [isOpenModal, closeModal]);
 
     function handleCopySql() {
-        const textToCopy = report.sql;
+        const currentSql = report.sqls?.[selectedSqlIndex]?.sql || "";
+        if (!currentSql) {
+            toast.error("Nenhum SQL disponível");
+            return;
+        }
+
         const textArea = document.createElement("textarea");
-        textArea.value = textToCopy;
+        textArea.value = currentSql;
         document.body.appendChild(textArea);
 
         textArea.focus();
@@ -36,22 +55,42 @@ const SqlPreview: React.FC = () => {
 
 
     async function handleDownloadSql() {
+        const currentSql = report.sqls?.[selectedSqlIndex];
+        if (!currentSql?.name) {
+            toast.error("Nenhum SQL disponível");
+            return;
+        }
+
         setLoading(true);
-        await ReportService.downloadFile(report.folder, report.sqlFile)
+        await ReportService.downloadFile(report.folder, currentSql.name);
         setLoading(false);
     }
 
 
     if (!isOpenModal("SqlPreview")) return null;
 
-    const sqlLines = (report.sql || "-- Nenhum SQL encontrado.").split("\n");
+    const currentSql = report.sqls?.[selectedSqlIndex];
+    const sqlLines = (currentSql?.sql || "-- Nenhum SQL encontrado.").split("\n");
 
     return (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 backdrop-blur-sm p-4">
             <div className="bg-card-dark border border-border-dark rounded-2xl shadow-2xl w-full max-w-5xl text-white z-50 overflow-hidden flex flex-col max-h-[90vh]">
-                <div className="flex flex-row justify-between items-center px-6 py-4 border-b border-border-dark bg-aside-dark/50 flex-shrink-0">
+        <div className="flex flex-row justify-between items-center px-6 py-4 border-b border-border-dark bg-aside-dark/50 shrink-0">
                     <div className="flex items-center gap-3">
                         <h2 className="text-xl font-bold">Preview SQL</h2>
+                        {report.sqls && report.sqls.length > 0 && (
+                            <select
+                                value={selectedSqlIndex}
+                                onChange={(e) => setSelectedSqlIndex(Number(e.target.value))}
+                                className="ml-4 px-3 py-1.5 bg-black/40 border border-border-dark rounded-lg text-white text-sm focus:outline-none focus:border-blue"
+                            >
+                                {report.sqls.map((sql, index) => (
+                                    <option key={index} value={index}>
+                                        {sql.name}
+                                    </option>
+                                ))}
+                            </select>
+                        )}
                     </div>
                     <button
                         className="p-1.5 hover:bg-error/20 rounded-lg hover:text-error text-gray transition-all cursor-pointer"
@@ -66,13 +105,13 @@ const SqlPreview: React.FC = () => {
                         <div className="overflow-auto custom-scrollbar flex-1 bg-black/20" style={{ scrollbarGutter: 'stable' }}>
                             <div className="flex min-w-full w-fit">
                                 <div className="bg-aside-dark/50 px-3 py-4 text-right select-none border-r border-border-dark text-dark-gray sticky left-0 z-10 min-w-[50px]">
-                                    {sqlLines.map((_, i) => (
+                                    {sqlLines.map((_: string, i: number) => (
                                         <div key={i} className="leading-relaxed">{i + 1}</div>
                                     ))}
                                 </div>
 
                                 <pre className="p-4 text-light-blue leading-relaxed whitespace-pre pr-8 flex-1">
-                                    <code>{report.sql || "-- Nenhum SQL encontrado."}</code>
+                                    <code>{currentSql?.sql || "-- Nenhum SQL encontrado."}</code>
                                 </pre>
                             </div>
                         </div>

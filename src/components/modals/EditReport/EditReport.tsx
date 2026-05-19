@@ -28,7 +28,7 @@ const EditReport: React.FC = () => {
 
     const [dragCounter, setDragCounter] = useState(0);
     const [xml, setXml] = useState<File | null>(null);
-    const [sql, setSql] = useState<File | null>(null);
+    const [sql, setSql] = useState<File[] | null>(null);
 
     useEffect(() => {
         if (report) {
@@ -49,7 +49,7 @@ const EditReport: React.FC = () => {
             if (name.endsWith('.xml')) {
                 setXml(file);
             } else if (name.endsWith('.sql')) {
-                setSql(file);
+                setSql(prev => prev ? [...prev, file] : [file]);
             } else {
                 toast.error(`O arquivo ${file.name} não é suportado (.xml ou .sql)`);
             }

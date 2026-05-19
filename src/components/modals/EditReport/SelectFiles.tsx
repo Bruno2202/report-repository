@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { ReportService } from "../../../services/ReportService";
 import type { ReportModel } from "../../../models/ReportModel";
 import { ModalContext } from "../../../contexts/ModalContext";
+import { ReportContext } from "../../../contexts/ReportContext";
 import ConfirmDelete from "../ConfirmDelete";
 
 interface SelectFilesProps {
@@ -11,8 +12,8 @@ interface SelectFilesProps {
     setReport: React.Dispatch<React.SetStateAction<ReportModel>>;
     xml: File | null;
     setXml: React.Dispatch<React.SetStateAction<File | null>>;
-    sql: File | null;
-    setSql: React.Dispatch<React.SetStateAction<File | null>>;
+    sql: File[] | null;
+    setSql: React.Dispatch<React.SetStateAction<File[] | null>>;
     dragCounter: number;
     onFilesSelected: (files: FileList | File[]) => void;
     onRefresh: () => Promise<void>;
@@ -33,6 +34,7 @@ const SelectFiles: React.FC<SelectFilesProps> = ({
     const [filename, setFilename] = useState<string>("");
 
     const { isOpenModal, openModal, closeModal } = useContext(ModalContext)!;
+    const { setReports } = useContext(ReportContext)!;
 
     const isDragging = dragCounter > 0;
 
@@ -42,11 +44,15 @@ const SelectFiles: React.FC<SelectFilesProps> = ({
         }
     };
 
-    const handleRemoveFile = (type: 'xml' | 'sql', e: React.MouseEvent) => {
-        e.preventDefault();
-        e.stopPropagation();
+    const handleRemoveFile = (type: 'xml' | 'sql', index?: number, e?: React.MouseEvent) => {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
         if (type === 'xml') setXml(null);
-        if (type === 'sql') setSql(null);
+        if (type === 'sql' && index !== undefined) {
+            setSql(prev => prev ? prev.filter((_, i) => i !== index) : null);
+        }
     };
 
     async function handleDeletePhysicalFile() {
@@ -57,10 +63,20 @@ const SelectFiles: React.FC<SelectFilesProps> = ({
             toast.success("Arquivo removido com sucesso!");
 
             const updatedReport = { ...report };
-            if (filename.toLowerCase().endsWith('.xml')) updatedReport.xml = "";
-            if (filename.toLowerCase().endsWith('.sql')) updatedReport.sqlFile = "";
+            if (filename.toLowerCase().endsWith('.xml')) {
+                updatedReport.xml = "";
+            }
+            if (filename.toLowerCase().endsWith('.sql')) {
+                updatedReport.sqls = updatedReport.sqls?.filter(sql => sql.name !== filename) || [];
+            }
 
             setReport(updatedReport);
+
+            setReports(prevReports =>
+                prevReports.map(r =>
+                    r.folder === report.folder ? updatedReport : r
+                )
+            );
 
             closeModal("ConfirmDeleteFile");
 
@@ -124,7 +140,7 @@ const SelectFiles: React.FC<SelectFilesProps> = ({
                                                 <span className="truncate max-w-[150px]">{xml.name}</span>
                                             </div>
                                         </div>
-                                        <button onClick={(e) => handleRemoveFile('xml', e)} className="p-1.5 hover:bg-white/10 rounded-full text-gray-400 cursor-pointer"><X size={16} /></button>
+                                        <button onClick={(e) => handleRemoveFile('xml', undefined, e)} className="p-1.5 hover:bg-white/10 rounded-full text-gray-400 cursor-pointer"><X size={16} /></button>
                                     </div>
                                 ) : (
                                     <div className="text-center group">
@@ -138,43 +154,61 @@ const SelectFiles: React.FC<SelectFilesProps> = ({
 
                     {/* Coluna SQL */}
                     <div className="flex flex-col gap-2">
-                        {report.sqlFile && !sql ? (
-                            <div className="flex items-center justify-between w-full h-28 px-4 border-2 border-blue/20 bg-blue/5 rounded-xl">
-                                <div className="flex items-center gap-3">
-                                    <Database className="text-blue" size={24} />
-                                    <div className="flex flex-col">
-                                        <span className="text-[10px] text-blue/70 uppercase font-bold tracking-wider">Arquivo no Servidor</span>
-                                        <span className="text-sm font-medium truncate max-w-[180px]">{report.sqlFile}</span>
+                        {/* Arquivos SQL no servidor */}
+                        <div className="space-y-2">
+                            {report.sqls && report.sqls.length > 0 && !sql && (
+                                report.sqls.map((sqlFile, index) => (
+                                    <div key={index} className="flex items-center justify-between w-full h-24 px-4 border-2 border-blue/20 bg-blue/5 rounded-xl">
+                                        <div className="flex items-center gap-3">
+                                            <Database className="text-blue" size={24} />
+                                            <div className="flex flex-col">
+                                                <span className="text-[10px] text-blue/70 uppercase font-bold tracking-wider">Arquivo no Servidor</span>
+                                                <span className="text-sm font-medium truncate max-w-[150px]">{sqlFile.name}</span>
+                                            </div>
+                                        </div>
+                                        <button
+                                            onClick={() => handleOpenConfirmDelete(sqlFile.name)}
+                                            className="p-2 hover:bg-error/20 rounded-lg text-error transition-colors cursor-pointer"
+                                            title="Excluir arquivo permanentemente"
+                                        >
+                                            <Trash2 size={18} />
+                                        </button>
                                     </div>
-                                </div>
-                                <button
-                                    onClick={() => handleOpenConfirmDelete(report.sqlFile!)}
-                                    className="p-2 hover:bg-error/20 rounded-lg text-error transition-colors cursor-pointer"
-                                    title="Excluir arquivo permanentemente"
-                                >
-                                    <Trash2 size={18} />
-                                </button>
-                            </div>
-                        ) : (
-                            <label className={`relative flex flex-col items-center justify-center w-full h-28 border-2 border-dashed rounded-xl cursor-pointer transition-all ${sql ? 'border-green-500/40 bg-green-500/5' : 'border-white/5 bg-white/[0.02] hover:border-blue/40'}`}>
-                                <input type="file" className="hidden" accept=".sql" onChange={handleFileChange} />
-                                {sql ? (
-                                    <div className="flex items-center justify-between w-full px-4">
+                                ))
+                            )}
+                        </div>
+
+                        {/* Novos arquivos SQL selecionados */}
+                        <div className="space-y-2">
+                            {sql && sql.length > 0 && (
+                                sql.map((file, index) => (
+                                    <div key={index} className="flex items-center justify-between w-full px-4 py-3 border-2 border-green-500/40 bg-green-500/5 rounded-xl">
                                         <div className="flex items-center gap-2 text-green-400 font-medium text-sm">
                                             <CheckCircle2 size={18} />
                                             <div className="flex flex-col text-left">
                                                 <span className="text-xs text-green-500/70 uppercase font-bold">Novo Arquivo</span>
-                                                <span className="truncate max-w-[150px]">{sql.name}</span>
+                                                <span className="truncate max-w-[150px]">{file.name}</span>
                                             </div>
                                         </div>
-                                        <button onClick={(e) => handleRemoveFile('sql', e)} className="p-1.5 hover:bg-white/10 rounded-full text-gray-400 cursor-pointer"><X size={16} /></button>
+                                        <button 
+                                            onClick={(e) => handleRemoveFile('sql', index, e)} 
+                                            className="p-1.5 hover:bg-white/10 rounded-full text-gray-400 cursor-pointer"
+                                        >
+                                            <X size={16} />
+                                        </button>
                                     </div>
-                                ) : (
-                                    <div className="text-center group">
-                                        <Database className="text-gray-600 group-hover:text-blue/70 transition-colors mx-auto mb-1" size={20} />
-                                        <span className="text-[11px] text-gray-500 block">Clique para substituir o <strong>SQL</strong></span>
-                                    </div>
-                                )}
+                                ))
+                            )}
+                        </div>
+
+                        {/* Área de upload */}
+                        {(!sql || sql.length === 0) && (
+                            <label className={`relative flex flex-col items-center justify-center w-full h-28 border-2 border-dashed rounded-xl cursor-pointer transition-all border-white/5 bg-white/2 hover:border-blue/40`}>
+                                <input type="file" className="hidden" accept=".sql" onChange={handleFileChange} multiple />
+                                <div className="text-center group">
+                                    <Database className="text-gray-600 group-hover:text-blue/70 transition-colors mx-auto mb-1" size={20} />
+                                    <span className="text-[11px] text-gray-500 block">Clique para adicionar <strong>SQL</strong> (múltiplos arquivos)</span>
+                                </div>
                             </label>
                         )}
                     </div>
