@@ -42,7 +42,7 @@ export const Home: React.FC = () => {
 
 	useEffect(() => {
 		const searchReports = () => {
-			if (reports.length > 0) {
+			if (reports?.length > 0) {
 				const reportsData = reports.filter(report => {
 					const search = searchParam.toLowerCase();
 					const matchesText =
