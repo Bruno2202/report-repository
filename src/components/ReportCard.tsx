@@ -17,7 +17,7 @@ const ReportCard: React.FC<ReportCardProps> = ({ report }) => {
 
     function handleCopyFolderPath() {
         const textArea = document.createElement("textarea");
-        textArea.value = report.folderPath;
+        textArea.value = report.networkPath;
 
         textArea.style.position = "fixed";
         textArea.style.left = "-9999px";

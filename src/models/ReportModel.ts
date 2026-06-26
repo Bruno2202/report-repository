@@ -8,6 +8,7 @@ export interface ReportModel {
     sqlFile: string;
     description: string;
     folderPath: string;
+    networkPath: string;  
     type: string;
     tags: TagModel[];
     title: string;
